@@ -1,8 +1,7 @@
 //= require jquery-ui/version
-//= require jquery-ui/escape-selector
 
 /*!
- * jQuery UI Labels 1.12.1
+ * jQuery UI Labels 1.13.0
  * http://jqueryui.com
  *
  * Copyright jQuery Foundation and other contributors
@@ -16,50 +15,57 @@
 //>>docs: http://api.jqueryui.com/labels/
 
 ( function( factory ) {
-  if ( typeof define === "function" && define.amd ) {
+	"use strict";
 
-    // AMD. Register as an anonymous module.
-    define( [ "jquery", "./version", "./escape-selector" ], factory );
-  } else {
+	if ( typeof define === "function" && define.amd ) {
 
-    // Browser globals
-    factory( jQuery );
-  }
-} ( function( $ ) {
+		// AMD. Register as an anonymous module.
+		define( [ "jquery", "./version" ], factory );
+	} else {
 
-  return $.fn.labels = function() {
-    var ancestor, selector, id, labels, ancestors;
+		// Browser globals
+		factory( jQuery );
+	}
+} )( function( $ ) {
+"use strict";
 
-    // Check control.labels first
-    if ( this[ 0 ].labels && this[ 0 ].labels.length ) {
-      return this.pushStack( this[ 0 ].labels );
-    }
+return $.fn.labels = function() {
+	var ancestor, selector, id, labels, ancestors;
 
-    // Support: IE <= 11, FF <= 37, Android <= 2.3 only
-    // Above browsers do not support control.labels. Everything below is to support them
-    // as well as document fragments. control.labels does not work on document fragments
-    labels = this.eq( 0 ).parents( "label" );
+	if ( !this.length ) {
+		return this.pushStack( [] );
+	}
 
-    // Look for the label based on the id
-    id = this.attr( "id" );
-    if ( id ) {
+	// Check control.labels first
+	if ( this[ 0 ].labels && this[ 0 ].labels.length ) {
+		return this.pushStack( this[ 0 ].labels );
+	}
 
-      // We don't search against the document in case the element
-      // is disconnected from the DOM
-      ancestor = this.eq( 0 ).parents().last();
+	// Support: IE <= 11, FF <= 37, Android <= 2.3 only
+	// Above browsers do not support control.labels. Everything below is to support them
+	// as well as document fragments. control.labels does not work on document fragments
+	labels = this.eq( 0 ).parents( "label" );
 
-      // Get a full set of top level ancestors
-      ancestors = ancestor.add( ancestor.length ? ancestor.siblings() : this.siblings() );
+	// Look for the label based on the id
+	id = this.attr( "id" );
+	if ( id ) {
 
-      // Create a selector for the label based on the id
-      selector = "label[for='" + $.ui.escapeSelector( id ) + "']";
+		// We don't search against the document in case the element
+		// is disconnected from the DOM
+		ancestor = this.eq( 0 ).parents().last();
 
-      labels = labels.add( ancestors.find( selector ).addBack( selector ) );
+		// Get a full set of top level ancestors
+		ancestors = ancestor.add( ancestor.length ? ancestor.siblings() : this.siblings() );
 
-    }
+		// Create a selector for the label based on the id
+		selector = "label[for='" + $.escapeSelector( id ) + "']";
 
-    // Return whatever we have found for labels
-    return this.pushStack( labels );
-  };
+		labels = labels.add( ancestors.find( selector ).addBack( selector ) );
 
-} ) );
+	}
+
+	// Return whatever we have found for labels
+	return this.pushStack( labels );
+};
+
+} );
